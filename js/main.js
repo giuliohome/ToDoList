@@ -94,18 +94,13 @@ const buildListItem = (item) => {
 
 const addClickListenerToCheckbox = (checkbox) => {
     checkbox.addEventListener("click", (event) => {
-        toDoList.removeItemFromList(checkbox.id);
+        const removedText = toDoList.removeItemFromList(checkbox.id);
         updatePersistentData(toDoList.getList());
-        const removedText = getLabelText(checkbox.id);
         updateScreenReaderConfirmation(removedText, "removed from list");
         setTimeout(() => {
             refreshThePage();
         }, 1000); 
     });
-}
-
-const getLabelText = (checkboxId) => {
-    return document.getElementById(checkboxId).nextElementSibling.textContent; 
 }
 
 const updatePersistentData = (listArray) => {

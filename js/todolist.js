@@ -19,8 +19,9 @@ export default class ToDoList {
         const list = this._list;
         for(let i = 0; i < list.length; i++) {
             if (list[i]._id == id) {
+                    const removed = list[i]._item
                     list.splice(i, 1);
-                    break;
+                    return removed;
             }
         }
     }
