@@ -22,19 +22,31 @@ const initApp = () => {
     clearItems.addEventListener("click", (event) => {
         const list = toDoList.getList();
         if (list.length) {
-            const confirmed = confirm("Are you sure you want to clear the entire list?");
+            const confirmed = confirm(
+                "Are you sure you want to clear the entire list?"
+            );
             if (confirmed) {
                 toDoList.clearList();
-                //TODO update persistent data
+                updatePersistentData(toDoList.getList());
                 refreshThePage();
             }
         }
     });
 
     // Procedural
-    // load the list object
+    loadListObject();
     refreshThePage();
 }
+
+const loadListObject = () => {
+    const storedList = localStorage.getItem("myToDoList"); 
+    if (typeof storedList !== "string") return; 
+    const parsedList = JSON.parse(storedList);
+    parsedList.forEach(itemObj => {
+        const newToDoItem = createNewItem(itemObj._id, itemObj._item);
+        toDoList.addItemToList(newToDoItem);
+    });
+};
 
 const refreshThePage = () => {
     clearListDispay();
@@ -83,12 +95,16 @@ const buildListItem = (item) => {
 const addClickListenerToCheckbox = (checkbox) => {
     checkbox.addEventListener("click", (event) => {
         toDoList.removeItemFromList(checkbox.id);
-        // TODO: remove from persistent data
+        updatePersistentData(toDoList.getList());
         setTimeout(() => {
             refreshThePage();
         }, 1000); 
     });
 }
+
+const updatePersistentData = (listArray) => {
+    localStorage.setItem("myToDoList", JSON.stringify(listArray));
+};
 
 const clearItemEntryField = () => {
     document.getElementById("newItem").value = "";
@@ -104,7 +120,7 @@ const processSubmission = () => {
     const nextItemId = calcNextItemId();
     const toDoItem = createNewItem(nextItemId, newEntryText);
     toDoList.addItemToList(toDoItem);
-    // TODO update persistent data
+    updatePersistentData(toDoList.getList());
     refreshThePage();
 };
 
